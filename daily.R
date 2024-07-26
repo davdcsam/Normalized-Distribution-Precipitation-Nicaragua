@@ -1,4 +1,5 @@
 library(openxlsx)
+library(stats)
 
 # Cargar los datos
 df_juigalpa_chirps <- read.xlsx(sprintf("%s%s",getwd(), "/data/precipitationDaily/Precipitación Diaria _ Juigalpa CHIRPS (2002-2019).xlsx"))
@@ -18,47 +19,31 @@ df_managua_chirps_values <- df_managua_chirps[[column_name_values]]
 df_managua_ineter_values <- df_managua_ineter[[column_name_values]]
 df_managua_trmm_values <- df_managua_trmm[[column_name_values]]
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+# Realizar la prueba de Kolmogorov Smirnov
+result_ks_juigalpa_chirps <- ks.test(df_juigalpa_chirps_values, "pnorm", mean=mean(df_juigalpa_chirps_values), sd=sd(df_juigalpa_chirps_values))
+result_ks_juigalpa_ineter <- ks.test(df_juigalpa_ineter_values, "pnorm", mean=mean(df_juigalpa_ineter_values), sd=sd(df_juigalpa_ineter_values))
+result_ks_juigalpa_trmm <- ks.test(df_juigalpa_trmm_values, "pnorm", mean=mean(df_juigalpa_trmm_values), sd=sd(df_juigalpa_trmm_values))
+result_ks_managua_chirps <- ks.test(df_managua_chirps_values, "pnorm", mean=mean(df_managua_chirps_values), sd=sd(df_managua_chirps_values))
+result_ks_managua_ineter <- ks.test(df_managua_ineter_values, "pnorm", mean=mean(df_managua_ineter_values), sd=sd(df_managua_ineter_values))
+result_ks_managua_trmm <- ks.test(df_managua_trmm_values, "pnorm", mean=mean(df_managua_trmm_values), sd=sd(df_managua_trmm_values))
 
 
 # Combinar todos los data frames en uno solo
 combined_df <- rbind(
-  df_juigalpa_chirps,
-  df_juigalpa_ineter,
-  df_juigalpa_trmm,
-  df_managua_chirps,
-  df_managua_ineter,
-  df_managua_trmm
+  result_ks_juigalpa_chirps,
+  result_ks_juigalpa_ineter,
+  result_ks_juigalpa_trmm,
+  result_ks_managua_chirps,
+  result_ks_managua_ineter,
+  result_ks_managua_trmm
 )
 
 # Crear un nuevo workbook
 wb <- createWorkbook()
 
 # Añadir una hoja y escribir los datos
-addWorksheet(wb, "Resultados_Mann_Kendall")
-writeData(wb, sheet = "Resultados_Mann_Kendall", x = combined_df)
+addWorksheet(wb, "Resultados_Kolmogorov_Smirnov")
+writeData(wb, sheet = "Resultados_Kolmogorov_Smirnov", x = combined_df)
 
 # Guardar el workbook en un archivo
-saveWorkbook(wb, "R_mann_kendall_daily.xlsx", overwrite = TRUE)
+saveWorkbook(wb, "R_kolmogorov_smirnov_daily.xlsx", overwrite = TRUE)
