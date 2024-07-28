@@ -46,4 +46,4 @@ addWorksheet(wb, "Resultados_Kolmogorov_Smirnov")
 writeData(wb, sheet = "Resultados_Kolmogorov_Smirnov", x = combined_df)
 
 # Guardar el workbook en un archivo
-saveWorkbook(wb, "R_Kolmogorov_Smirnov_Daily.xlsx", overwrite = TRUE)
+saveWorkbook(wb, "R Kolmogorov Smirnov Precipitacion Daily Test.xlsx", overwrite = TRUE)
